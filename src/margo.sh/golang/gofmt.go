@@ -2,6 +2,8 @@ package golang
 
 import (
 	"go/format"
+	"path/filepath"
+
 	mgformat "margo.sh/format"
 	"margo.sh/mg"
 	"margo.sh/sublime"
@@ -47,5 +49,6 @@ func goImports(mx *mg.Ctx) *mg.State {
 		Args:    []string{"-srcdir", mx.View.Filename()},
 		Langs:   commonFmtLangs,
 		Actions: commonFmtActions,
+		Dir:     filepath.Dir(mx.View.Filename()),
 	}.Reduce(mx))
 }

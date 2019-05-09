@@ -3,9 +3,10 @@ package format
 import (
 	"bytes"
 	"fmt"
+	"os/exec"
+
 	"margo.sh/mg"
 	"margo.sh/mgutil"
-	"os/exec"
 )
 
 // FmtFunc is a reducer for generic fmt functions
@@ -69,6 +70,8 @@ type FmtCmd struct {
 	// Actions is a list of actions on which the reducer is allowed to run.
 	// The reducer always runs on the ViewFmt action, even if this list is empty.
 	Actions []mg.Action
+
+	Dir string
 }
 
 // Reduce implements the FmtCmd reducer.
@@ -82,6 +85,7 @@ func (fc FmtCmd) fmt(mx *mg.Ctx, src []byte) ([]byte, error) {
 	stderr := bytes.NewBuffer(nil)
 	cmd := exec.Command(fc.Name, fc.Args...)
 	cmd.Env = mx.Env.Merge(fc.Env).Environ()
+	cmd.Dir = fc.Dir
 	cmd.Stdin = stdin
 	cmd.Stdout = stdout
 	cmd.Stderr = stderr
